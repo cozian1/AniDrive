@@ -71,7 +71,7 @@ export default function App() {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{ title: "", headerTransparent: true, headerTintColor: "#fff", animation: "slide_from_left" }}
+          options={{ title: "Profile", headerTransparent: true, headerTintColor: "#fff", animation: "slide_from_left" }}
         />
         <Stack.Screen
           name="fev"

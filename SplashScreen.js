@@ -24,18 +24,19 @@ const maxheight=Dimensions.get("screen").height;
 
 export default function SplashScreen({navigation,route}) {
   const paths = getPaths();
-  DataBase.setUpDatabase();
   async function prepare() {
     let Data={};
     NavigationBar.setVisibilityAsync('hidden');
     NavigationBar.setBehaviorAsync('overlay-swipe');
       try {
+        DataBase.setUpDatabase();
         Data={
           slider:await scrapeSlider(),
           recent:await scrapePages(paths.recently_updated),
           popular:await scrapePages(paths.most_popular),
         }
-        await new Promise(resolve => setTimeout(resolve, 500));
+        DataBase.Settings.updateSettings('auto','sub','English','auto','sub','English');
+        //await new Promise(resolve => setTimeout(resolve, 500));
       } catch (e) {
         console.warn('Error in Prepair',e);
       } finally {

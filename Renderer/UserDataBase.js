@@ -11,7 +11,7 @@ export class DataBase {
     this.Userdb = db;
     db.transaction((tx) => {
       tx.executeSql("create table if not exists FevList (id integer primary key not null, anime_id varchar(255), name varchar(255), src text, type varchar(50), created_at TIMESTAMP);");
-      //tx.executeSql("create table if not exists UserSettings (id integer primary key not null, done int, value text);");
+      tx.executeSql("create table if not exists UserSettings (id integer primary key not null,playbackQuality varchar(20),playbackAudio varchar(20),playbackSubtitle varchar(100),downloadQuality varchar(20),downloadAudio varchar(20),downloadSubtitle varchar(100));");
       tx.executeSql("create table if not exists WatchHistory (id integer primary key not null,animeId varchar(255), episodeNumber integer, playbackTime integer,name varchar(255), src text, type varchar(50), last_updated TIMESTAMP)");
     });
   }
@@ -20,6 +20,7 @@ export class DataBase {
     db.transaction((tx) => {
       tx.executeSql("DROP TABLE FevList",[],(_, result) => console.log(result),(_, error) => console.log(error));
       tx.executeSql("DROP TABLE WatchHistory",[],(_, result) => console.log(result),(_, error) => console.log(error));
+      tx.executeSql("DROP TABLE UserSettings",[],(_, result) => console.log(result),(_, error) => console.log(error));
       //tx.executeSql("create table if not exists UserSettings (id integer primary key not null, done int, value text);");
       //tx.executeSql("create table if not exists WatchHistory (id integer primary key not null, done int, value text);");
     });
@@ -165,4 +166,36 @@ export class DataBase {
       });
     },
   };
+  static Settings={
+    updateSettings: (playbackQuality ,playbackAudio ,playbackSubtitle ,downloadQuality,downloadAudio,downloadSubtitle) => {
+      return new Promise((resolve, reject) => {
+        try {
+          db.transaction(async (tx) => {
+            resolve(
+              await new Promise((resolve, reject) => {
+                tx.executeSql("INSERT OR REPLACE INTO UserSettings (id,playbackQuality,playbackAudio,playbackSubtitle,downloadQuality,downloadAudio,downloadSubtitle) VALUES (0, ?, ?, ?, ?, ?, ?);",[playbackQuality ,playbackAudio ,playbackSubtitle ,downloadQuality,downloadAudio,downloadSubtitle],(_, result) => resolve(result),(_, error) => reject(console.log(error)));
+              })
+            );
+          });
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+    getSettings: () => {
+      return new Promise((resolve, reject) => {
+        try {
+          db.transaction(async (tx) => {
+            resolve(
+              await new Promise((resolve, reject) => {
+                tx.executeSql("select * from UserSettings",[],(_, { rows }) => resolve(rows._array),(_, error) => reject(error));
+              })
+            );
+          });
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+  }
 }
