@@ -1,0 +1,27 @@
+{
+  "id": " ",
+  "title": " ",
+  "malID": " ",
+  "alID": " ",
+  "image": " ",
+  "description": " ",
+  "subOrDub": " ",
+  "totalEpisodes": " ",
+  "episodes": [{
+    "url":" ",
+    "isFiller":" ",
+    "title":" ",
+    "number":" ",
+    "id":" "
+  }],
+  "Aired": " ",
+  "Premiered": " ",
+  "Duration": " ",
+  "Status": " ",
+  "MAL_Score": "?",
+  "Genres": [" "],
+  "Studios": [" "],
+  "Recomendation":[{
+    
+  }]
+}

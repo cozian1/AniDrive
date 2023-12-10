@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Beyblade X",
+    "id": "beyblade-x-18632",
+    "img": "https://img.flawlessfiles.com/_r/300x400/100/ea/d4/ead47129d7080b87764abe4117d0c92e/ead47129d7080b87764abe4117d0c92e.png",
+    "type": "TV"
+  },
+  {
+    "Name": "Onmyouji",
+    "id": "onmyouji-18626",
+    "img": "https://img.flawlessfiles.com/_r/300x400/100/d0/f9/d0f94bdf2422873e7fe40d7967266a5e/d0f94bdf2422873e7fe40d7967266a5e.jpg",
+    "type": "ONA"
+  },
+  {
+    "Name": "Tokyo Revengers: Tenjiku-hen",
+    "id": "tokyo-revengers-tenjiku-hen-18575",
+    "img": "https://img.flawlessfiles.com/_r/300x400/100/02/1c/021ca452bd8b38c15f2e3c60e4a8c2ca/021ca452bd8b38c15f2e3c60e4a8c2ca.jpg",
+    "type": "TV"
+  },
+  {
+    "Name": "Helck",
+    "id": "helck-18475",
+    "img": "https://img.flawlessfiles.com/_r/300x400/100/8a/ef/8aefe7f11b488baf83af0585fbc8519d/8aefe7f11b488baf83af0585fbc8519d.jpg",
+    "type": "TV"
+  },
+  {
+    "Name": "Little Shark's Outings",
+    "id": "little-sharks-outings-18516",
+    "img": "https://img.flawlessfiles.com/_r/300x400/100/1c/cf/1ccf7aa185d0c86ed73ed25677246f93/1ccf7aa185d0c86ed73ed25677246f93.jpg",
+    "type": "ONA"
+  }
+]

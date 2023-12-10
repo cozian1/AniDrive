@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "url": "https://ef.netmagcdn.com:2228/hls-playback/73d95f50d84c53a7d28c3ce0ec2a2bee49fbae21e2a76e6a376f900fbaeec42ad7dd15e4f99d107a460b490b5f930c09a2fb9a352b632a7becbf3977f8452fad003adea08bbce1eb1075ccbfae943f1ad7b7ab1b0faa131362ef5a6b4ec36c8c22cbec1eb345660de2a46925c0d3411cf53234a750d4e5a9a098020f83536fbaf73ddefff03a853cc83ed7c2c76fb478/master.m3u8",
+      "isM3U8": true
+    },
+    {
+      "url": "https://ef.netmagcdn.com:2228/hls-playback/73d95f50d84c53a7d28c3ce0ec2a2bee49fbae21e2a76e6a376f900fbaeec42ad7dd15e4f99d107a460b490b5f930c09a2fb9a352b632a7becbf3977f8452fad003adea08bbce1eb1075ccbfae943f1ad7b7ab1b0faa131362ef5a6b4ec36c8c22cbec1eb345660de2a46925c0d3411cf53234a750d4e5a9a098020f83536fbaf73ddefff03a853cc83ed7c2c76fb478/master.m3u8",
+      "isM3U8": true,
+      "quality": "auto"
+    }
+  ],
+  "subtitles": [
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/ara-6.vtt",
+      "lang": "Arabic"
+    },
+    {
+      "url": "https://ccb.megaresources.co/44/79/447983f6f6c2ba4467395aeef52aa1cd/447983f6f6c2ba4467395aeef52aa1cd.vtt",
+      "lang": "English"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/fre-7.vtt",
+      "lang": "French"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/ger-8.vtt",
+      "lang": "German"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/ita-9.vtt",
+      "lang": "Italian"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/por-3.vtt",
+      "lang": "Portuguese - Portuguese(Brazil)"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/rus-10.vtt",
+      "lang": "Russian"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/spa-5.vtt",
+      "lang": "Spanish"
+    },
+    {
+      "url": "https://ccb.megaresources.co/02/15/0215e7e5c823af7480ed85270fa1487e/spa-4.vtt",
+      "lang": "Spanish - Spanish(Latin_America)"
+    }
+  ],
+  "intro": { "start": 183, "end": 272 }
+}
