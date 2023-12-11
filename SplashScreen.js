@@ -35,7 +35,11 @@ export default function SplashScreen({navigation,route}) {
           recent:await scrapePages(paths.recently_updated),
           popular:await scrapePages(paths.most_popular),
         }
-        DataBase.Settings.updateSettings('auto','sub','English','auto','sub','English');
+        let settings=await DataBase.Settings.getSettings();
+        if(settings.length==0){
+          console.log('updated');
+          DataBase.Settings.updateSettings('auto','sub','English','auto','sub','English');
+        }
         //await new Promise(resolve => setTimeout(resolve, 500));
       } catch (e) {
         console.warn('Error in Prepair',e);

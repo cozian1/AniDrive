@@ -1,5 +1,5 @@
 import { Dimensions, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons,Feather } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import {Picker} from '@react-native-picker/picker';
@@ -9,20 +9,20 @@ import { DataBase } from "./Renderer/UserDataBase";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-let Settings=null;
+let Settings;
 export default function ProfileScreen({ navigation, route }) {
 	const [isPlayerSettings,setIsPlayerSettings]=useState(false);
 	const [isDownloaderSettings,setIsDownloaderSettings]=useState(false);
-	const [pbQuality, setpbQuality] = useState();
-	const [pbAudio, setpbAudio] = useState();
-	const [pbSubtitle, setpbSubtitle] = useState();
-	const [dlQuality, setdlQuality] = useState();
-	const [dlAudio, setdlAudio] = useState();
-	const [dlSubtitle, setdlSubtitle] = useState();
+	const [pbQuality, setpbQuality] = useState('auto');
+	const [pbAudio, setpbAudio] = useState('sub');
+	const [pbSubtitle, setpbSubtitle] = useState('English');
+	const [dlQuality, setdlQuality] = useState('auto');
+	const [dlAudio, setdlAudio] = useState('sub');
+	const [dlSubtitle, setdlSubtitle] = useState('English');
 
 	const qualitylist=[{label:'Auto', value:'auto'},{label:'1080P', value:'1080P'},{label:'720P', value:'720P'},{label:'360P', value:'360P'}];
 	const subtitlelist=['Arabic','English','French','German','Italian','Portuguese - Portuguese(Brazil)','Russian','Spanish','Spanish - Spanish(Latin_America)'];
-	const audiolanguage=['Sub','Dub'];
+	const audiolanguage=[{label:'Sub', value:'sub'},{label:'Dub', value:'dub'}];
 	//const [isPlayerSettings,setIsPlayerSettings]=useState(false);
 
 	const url='https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9';
@@ -41,7 +41,7 @@ export default function ProfileScreen({ navigation, route }) {
 				<Text style={[styles.text,{marginStart:15}]}>Audio Language</Text>
 				<Picker style={styles.picker} dropdownIconColor={'#fff'} dropdownIconRippleColor={'#fff6'} prompt="title" mode="dropdown" selectedValue={pbAudio} onValueChange={(itemValue, itemIndex) =>setpbAudio(itemValue)}>
 					{audiolanguage.map((o)=>(
-						<Picker.Item key={o} style={styles.picker} label={o} value={o}/>
+						<Picker.Item key={o} style={styles.picker} label={o.label} value={o.value}/>
 					))}
 				</Picker>
 			</View>
@@ -69,7 +69,7 @@ export default function ProfileScreen({ navigation, route }) {
 				<Text style={[styles.text,{marginStart:15}]}>Audio Language</Text>
 				<Picker style={styles.picker} dropdownIconColor={'#fff'} dropdownIconRippleColor={'#fff6'} prompt="title" mode="dropdown" selectedValue={dlAudio} onValueChange={(itemValue, itemIndex) =>setdlAudio(itemValue)}>
 					{audiolanguage.map((o)=>(
-						<Picker.Item key={o} style={styles.picker} label={o} value={o}/>
+						<Picker.Item key={o} style={styles.picker} label={o.label} value={o.value}/>
 					))}
 				</Picker>
 			</View>
@@ -83,15 +83,12 @@ export default function ProfileScreen({ navigation, route }) {
 			</View>
 		</View>
 	);
-	useEffect(() => {
-		//console.log(pbQuality,pbAudio,pbSubtitle,dlAudio,dlQuality,dlSubtitle);
-		if(Settings){
-			//DataBase.Settings.updateSettings(pbQuality,pbAudio,pbSubtitle,dlQuality,dlAudio,dlSubtitle);
-		}
-	}, [pbQuality,pbAudio,pbSubtitle,dlAudio,dlQuality,dlSubtitle])
+	async function saveSettings(){
+		console.log(await DataBase.Settings.updateSettings(pbQuality,pbAudio,pbSubtitle,dlQuality,dlAudio,dlSubtitle));
+	}
 	useEffect(() => {
 		async function load(){
-			Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
+			const Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
 			console.log(Settings);
 			setpbAudio(Settings.playbackAudio);
 			setpbQuality(Settings.playbackQuality);
@@ -99,7 +96,7 @@ export default function ProfileScreen({ navigation, route }) {
 			setdlAudio(Settings.downloadAudio);
 			setdlQuality(Settings.downloadQuality);
 			setdlSubtitle(Settings.downloadSubtitle);
-			console.log(pbQuality,pbAudio,pbSubtitle,dlAudio,dlQuality,dlSubtitle);
+			//console.log(pbQuality,pbAudio,pbSubtitle,dlAudio,dlQuality,dlSubtitle);
 		}
 		
 		load();
@@ -110,7 +107,8 @@ export default function ProfileScreen({ navigation, route }) {
 			<Image style={{position:'absolute', height:screenWidth,width:'100%',transform:[{rotate:'90deg'}]}} source={{uri:url}}/>
 			</View>
 			<View style={{flex:4,borderTopLeftRadius:30,borderTopRightRadius:30,backgroundColor:'#111',paddingTop:10}}>
-				<ScrollView contentContainerStyle={{flex:1}}>
+				<ScrollView contentContainerStyle={{paddingBottom:100}}>
+					
 					<Text style={[styles.item_text]}>Settings</Text>
 					<Pressable onPress={()=>null} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>General</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
 					<Pressable onPress={()=>setIsPlayerSettings(!isPlayerSettings)} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>Player Settings</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: isPlayerSettings?'270deg':'180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
@@ -122,6 +120,7 @@ export default function ProfileScreen({ navigation, route }) {
 					<Pressable onPress={()=>null} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>AniList sync</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
 				</ScrollView>
 			</View>
+			<Pressable onPress={saveSettings} style={{position:'absolute',bottom:40,right:20,backgroundColor:'#57f',padding:10,borderRadius:10}}><Feather name="save" size={35} color="white" /></Pressable>
     </View>
   );
 }

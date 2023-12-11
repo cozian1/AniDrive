@@ -56,12 +56,36 @@ export default function Player({navigation, route}) {
   async function loadData() {
     audio=[];currentAudio='sub';Source={};
     try {
+      const Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
+      currentAudio=Settings.playbackAudio;
+      // const d=await pullserver(CurrentEpisode.episode_id,Settings.playbackAudio);
+      // for(i of d?.sources){
+      //   if(i.quality==Settings.playbackQuality){
+      //     vidurl=i.url;
+      //     break;
+      //   }
+      // }
+      // for (i of d?.subtitles) {
+      //   if (i.lang == Settings.playbackSubtitle) {
+      //     suburl = i.url;
+      //     break;
+      //   }
+      // }
+
       Source = await getStreams(CurrentEpisode);
       setSourceData(Source);
       if(Source.sub.length != 0) audio.push('sub');
       if(Source.dub.length != 0) audio.push('dub');
       if(Source.sub.length==0) currentAudio='dub';
       setCurrentUrl(Source.sub.length==0?Source.dub.at(0).url:Source.sub.at(0).url);
+      currentAudio=Source[currentAudio].length==0?(currentAudio=='sub'?'dub':'sub'):currentAudio;
+      setCurrentUrl()
+      for(let i of Source[currentAudio]){
+        if(i.quality.toLowerCase()==Settings.playbackQuality.toLowerCase()){
+          setCurrentUrl(i.url);
+          break;
+        }
+      }
       for(i of Source?.subtitles){
         if(i.lang=='English'){
           setSubtitleUrl(i.url);
@@ -265,7 +289,7 @@ export default function Player({navigation, route}) {
   useEffect(() => {
     if(isModal && epiView!=null){
       epiView.current?.scrollToIndex({
-        index: CurrentEpisode.number/5-1,
+        index: Math.max(CurrentEpisode.number/5-1,0),
         animated: true,
       });
     }

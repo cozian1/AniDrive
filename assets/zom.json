@@ -1,27 +1,38 @@
-{
-  "id": " ",
-  "title": " ",
-  "malID": " ",
-  "alID": " ",
-  "image": " ",
-  "description": " ",
-  "subOrDub": " ",
-  "totalEpisodes": " ",
-  "episodes": [{
-    "url":" ",
-    "isFiller":" ",
-    "title":" ",
-    "number":" ",
-    "id":" "
-  }],
-  "Aired": " ",
-  "Premiered": " ",
-  "Duration": " ",
-  "Status": " ",
-  "MAL_Score": "?",
-  "Genres": [" "],
-  "Studios": [" "],
-  "Recomendation":[{
-    
-  }]
-}
+[
+  {
+    "id": " ",
+    "title": " ",
+    "malID": " ",
+    "alID": " ",
+    "image": " ",
+    "description": " ",
+    "subOrDub": " ",
+    "totalEpisodes": " ",
+    "episodes": [
+      {
+        "url": " ",
+        "isFiller": " ",
+        "title": " ",
+        "number": " ",
+        "id": " "
+      }
+    ],
+    "Aired": " ",
+    "Premiered": " ",
+    "Duration": " ",
+    "Status": " ",
+    "MAL_Score": "?",
+    "Genres": [" "],
+    "Studios": [" "],
+    "Recomendation": [{}]
+  },
+  {
+    "downloadAudio": "sub",
+    "downloadQuality": "auto",
+    "downloadSubtitle": "English",
+    "id": 0,
+    "playbackAudio": "sub",
+    "playbackQuality": "auto",
+    "playbackSubtitle": "English"
+  }
+]

@@ -11,7 +11,6 @@ export default function EpisodeViewLine(props) {
   const Episodes=props.Episodes;
   const CurrentEpisode=Episodes[props.index];
   const [status,setStatus]=useState(false);
-  // const EpisodeId=props.url.split('/')[4];
 
   async function downloader() {
     setStatus(true);

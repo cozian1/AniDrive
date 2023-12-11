@@ -69,10 +69,11 @@ export async function MegacloudScrapper(serverId){
     }else{
       sources=JSON.parse(data.sources);
     }
+    console.log(sources);
     const meta =await fetch(sources.file).then((res)=>res.text());
     const regex = /RESOLUTION=(\d+x\d+)[\s\S]*?\n(index[^\\n]+?\.m3u8)/g;
     let match;
-    let vid=[{url:sources.file,quality:'AUTO'}];
+    let vid=[{url:sources.file,quality:'auto'}];
     while ((match = regex.exec(meta)) !== null) {
       const resolution = match[1];
       const index = match[2];
@@ -80,8 +81,7 @@ export async function MegacloudScrapper(serverId){
         url:sources.file.substring(0,sources.file.lastIndexOf('/')+1)+index ,
         quality:resolution.split('x').pop()+'P'
       });
-      //console.log(sources.file.substring(0,sources.file.lastIndexOf('/')+1)+index);
-      //console.log({Resolution: resolution, Index: index});
+
     }
     data.sources=vid;
     data.subtitles=[];
