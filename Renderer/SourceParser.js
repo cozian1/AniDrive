@@ -69,7 +69,6 @@ export async function MegacloudScrapper(serverId){
     }else{
       sources=JSON.parse(data.sources);
     }
-    console.log(sources);
     const meta =await fetch(sources.file).then((res)=>res.text());
     const regex = /RESOLUTION=(\d+x\d+)[\s\S]*?\n(index[^\\n]+?\.m3u8)/g;
     let match;
@@ -92,9 +91,9 @@ export async function MegacloudScrapper(serverId){
     return data;
   } catch (err) {
     console.log(err);
-    return {message:err};
+    return null;
   }
 }
 
-// let d=async ()=> console.log(await pullserver(102842,'sub'));
+// let d=async ()=> console.log(await pullserver(106611,'sub'));
 // d();

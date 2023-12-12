@@ -78,7 +78,7 @@ export default function App() {
           component={Fev}
           options={{
             title: "Favourite",
-            headerStyle: { backgroundColor: "#002" },
+            headerStyle: { backgroundColor: "#003" },
             animation: "slide_from_right",
             headerTintColor: "#fff",
             headerTitleStyle: { color: "#FFF", fontWeight: "bold" },
@@ -90,7 +90,7 @@ export default function App() {
           component={More_page}
           options={({ route }) => ({
             title: route.params.title,
-            headerStyle: { backgroundColor: "#002" },
+            headerStyle: { backgroundColor: "#003" },
             animation: "slide_from_right",
             headerTintColor: "#fff",
             headerTitleStyle: { color: "#FFF", fontWeight: "bold" },
@@ -101,7 +101,7 @@ export default function App() {
           name="Filter"
           component={FilterPage}
           options={{
-            headerStyle: { backgroundColor: "#002" },
+            headerStyle: { backgroundColor: "#003" },
             animation: "slide_from_right",
             headerTintColor: "#fff",
             headerTitleStyle: { color: "#FFF", fontWeight: "bold" },

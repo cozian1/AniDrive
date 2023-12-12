@@ -63,7 +63,7 @@ export default function ImgBox(props) {
 const styles = StyleSheet.create({
   box: {
     width: 140,
-    height: 180,
+    height: 190,
     backgroundColor: "#000",
     borderRadius: 15,
     margin: 5,

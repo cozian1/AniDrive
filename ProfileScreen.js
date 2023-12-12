@@ -1,4 +1,4 @@
-import { Dimensions, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Switch, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { MaterialIcons,Feather } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
@@ -13,6 +13,8 @@ let Settings;
 export default function ProfileScreen({ navigation, route }) {
 	const [isPlayerSettings,setIsPlayerSettings]=useState(false);
 	const [isDownloaderSettings,setIsDownloaderSettings]=useState(false);
+	const [isGeneralSettings,setIsGeneralSettings]=useState(false);
+	
 	const [pbQuality, setpbQuality] = useState('auto');
 	const [pbAudio, setpbAudio] = useState('sub');
 	const [pbSubtitle, setpbSubtitle] = useState('English');
@@ -24,7 +26,9 @@ export default function ProfileScreen({ navigation, route }) {
 	const subtitlelist=['Arabic','English','French','German','Italian','Portuguese - Portuguese(Brazil)','Russian','Spanish','Spanish - Spanish(Latin_America)'];
 	const audiolanguage=[{label:'Sub', value:'sub'},{label:'Dub', value:'dub'}];
 	//const [isPlayerSettings,setIsPlayerSettings]=useState(false);
-
+	const [isEnabled, setIsEnabled] = useState(true);
+	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  
 	const url='https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9';
 
 	const playbackSettings=(
@@ -58,6 +62,16 @@ export default function ProfileScreen({ navigation, route }) {
 	const downloadSettings=(
 		<View>
 			<View style={{flexDirection:'row',width:screenWidth}}>
+				<Text style={[styles.text,{marginStart:15}]}>Download With 1DM</Text>
+				<Switch
+					style={{marginStart:'auto',marginHorizontal:15}}
+					trackColor={{false: '#777', true: '#048'}}
+					thumbColor={isEnabled ? '#57f' : '#ddd'}
+					onValueChange={toggleSwitch}
+					value={isEnabled}
+				/>
+			</View>
+			<View style={{flexDirection:'row',width:screenWidth}}>
 				<Text style={[styles.text,{marginStart:15}]}>Media Quality</Text>
 				<Picker style={styles.picker} dropdownIconColor={'#fff'} dropdownIconRippleColor={'#fff6'} prompt="title" mode="dropdown" selectedValue={dlQuality} onValueChange={(itemValue, itemIndex) =>setdlQuality(itemValue)}>
 					{qualitylist.map((o)=>(
@@ -83,8 +97,33 @@ export default function ProfileScreen({ navigation, route }) {
 			</View>
 		</View>
 	);
+	const generalSettings=(
+		<View>
+			<View style={{flexDirection:'row',width:screenWidth}}>
+				<Text style={[styles.text,{marginStart:15}]}>Fast-forward with double tap</Text>
+				<Switch
+					style={{marginStart:'auto',marginHorizontal:15}}
+					trackColor={{false: '#777', true: '#048'}}
+					thumbColor={isEnabled ? '#57f' : '#ddd'}
+					onValueChange={toggleSwitch}
+					value={isEnabled}
+				/>
+			</View>
+			<View style={{flexDirection:'row',width:screenWidth}}>
+				<Text style={[styles.text,{marginStart:15}]}>Download With 1DM</Text>
+				<Switch
+					style={{marginStart:'auto',marginHorizontal:15}}
+					trackColor={{false: '#777', true: '#048'}}
+					thumbColor={isEnabled ? '#57f' : '#ddd'}
+					onValueChange={toggleSwitch}
+					value={isEnabled}
+				/>
+			</View>
+		</View>
+	);
 	async function saveSettings(){
-		console.log(await DataBase.Settings.updateSettings(pbQuality,pbAudio,pbSubtitle,dlQuality,dlAudio,dlSubtitle));
+		await DataBase.Settings.updateSettings(pbQuality,pbAudio,pbSubtitle,dlQuality,dlAudio,dlSubtitle);
+		ToastAndroid.show('Saved', ToastAndroid.SHORT);
 	}
 	useEffect(() => {
 		async function load(){
@@ -110,7 +149,8 @@ export default function ProfileScreen({ navigation, route }) {
 				<ScrollView contentContainerStyle={{paddingBottom:100}}>
 					
 					<Text style={[styles.item_text]}>Settings</Text>
-					<Pressable onPress={()=>null} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>General</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
+					<Pressable onPress={()=>setIsGeneralSettings(previousState => !previousState)} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>General</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: isGeneralSettings?'270deg':'180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
+					{isGeneralSettings?generalSettings:null}
 					<Pressable onPress={()=>setIsPlayerSettings(!isPlayerSettings)} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>Player Settings</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: isPlayerSettings?'270deg':'180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
 					{isPlayerSettings?playbackSettings:null}
 					<Pressable onPress={()=>setIsDownloaderSettings(!isDownloaderSettings)} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>Downloader Settings</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: isDownloaderSettings?'270deg':'180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
@@ -120,7 +160,7 @@ export default function ProfileScreen({ navigation, route }) {
 					<Pressable onPress={()=>null} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>AniList sync</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
 				</ScrollView>
 			</View>
-			<Pressable onPress={saveSettings} style={{position:'absolute',bottom:40,right:20,backgroundColor:'#57f',padding:10,borderRadius:10}}><Feather name="save" size={35} color="white" /></Pressable>
+			<TouchableOpacity activeOpacity={0.5} onPress={saveSettings} style={{position:'absolute',bottom:40,right:20,backgroundColor:'#57f',padding:10,borderRadius:10}}><Feather name="save" size={35} color="white" /></TouchableOpacity>
     </View>
   );
 }

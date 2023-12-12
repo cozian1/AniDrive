@@ -17,17 +17,17 @@ export default function LastPlayed(props) {
 	}
 
   return (
-		<Pressable style={[styles.box,props.style]} onPress={()=>{Navigation.push('Details', {id: props.id,data:props,isWatch:true});}}>
+		<Pressable onLongPress={()=>Navigation.push('Details', {id: props.id,data:props})} style={[styles.box,props.style]} onPress={()=>{Navigation.push('Details', {id: props.id,data:props,isWatch:true});}}>
 			<ImageBackground
         style={styles.img}
         imageStyle={{ borderRadius: 15 }}
         source={{ uri: props.src }}
       >
-				<LinearGradient colors={['#000a','#0008','#0000']} style={{flexDirection:'row',padding:2}}>
-					<Pressable onPress={()=>Navigation.push('Details', {id: props.id,data:props})} style={{marginEnd:'auto'}}><Ionicons  name="ios-information-circle-outline" size={24} color="white" /></Pressable>
-					<Pressable onPress={removeItem} style={{marginStart:'auto'}}><Ionicons  name="md-close-sharp" size={28} color="white"/></Pressable>
-				</LinearGradient>
-				<Ionicons style={{position:'absolute',top:props.style.height/3,left:props.style.width/2.8}} name="ios-play" size={40} color="red" />
+				<View style={{flexDirection:'row',padding:2}}>
+					<View style={{marginEnd:'auto'}}><Text style={[styles.typetext]}>{props.type}</Text></View>
+					<Pressable onPress={removeItem} style={{marginStart:'auto'}}><Ionicons style={{backgroundColor:'#0007',borderRadius:50,margin:5}}  name="md-close" size={25} color="white"/></Pressable>
+				</View>
+				<Ionicons style={{position:'absolute',top:props.style.height/3,left:props.style.width/2.8,backgroundColor:'#0003',borderRadius:50}} name="play-circle-outline" size={50} color="#fff" />
 			</ImageBackground>
     </Pressable>
   );

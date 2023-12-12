@@ -138,15 +138,17 @@ export default function Home({ navigation, route }) {
             }):<></>}
           </ScrollView>
         </View>
+        {lastPlayed && lastPlayed.length>0?<Text style={styles.headings}>Continue Watching</Text>:null}
         <FlatList
           contentContainerStyle={{ paddingHorizontal: 15 }}
           data={lastPlayed}
           renderItem={({ item }) => (
             <LastPlayed
-              style={{ width: screenWidth / 3, height: screenHeight / 8 }}
+              style={{ width: screenWidth / 2.8, height: screenHeight / 6 }}
               id={item.animeId}
               src={item.src}
               name={item.name}
+              type={item.type}
               LastPlayedRemoved={loadLastPlayed}
             />
           )}
@@ -285,7 +287,7 @@ const styles = StyleSheet.create({
   headings: {
     flex: 1,
     padding: 10,
-    fontWeight: "500",
+    fontWeight: "600",
     fontSize: 18,
     textAlign: "left",
     color: "#fff",

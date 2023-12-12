@@ -2,6 +2,7 @@ import * as IntentLauncher from "expo-intent-launcher";
 import { getStreams } from "./ZoroHome";
 import { DataBase } from "./UserDataBase";
 import { pullserver } from "./SourceParser";
+import { ToastAndroid } from "react-native";
 
 export class Downloader {
   static isRunning = false;
@@ -16,8 +17,13 @@ export class Downloader {
           const Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
           //const d = await getStreams(CurrentEpisode);
           //vidurl = d.sub[2].url;
-          console.log(Settings)
           const d=await pullserver(CurrentEpisode.episode_id,Settings.downloadAudio);
+          if(d==null){
+            this.downloadQueue.pop();
+            ToastAndroid.show('No Resources found with Current settings', ToastAndroid.SHORT);
+            continue;
+          }
+          console.log(d);
           for(i of d?.sources){
             if(i.quality==Settings.downloadQuality){
               vidurl=i.url;
@@ -25,6 +31,7 @@ export class Downloader {
             }
           }
           for (i of d?.subtitles) {
+            console.log(i.lang == Settings.downloadSubtitle);
             if (i.lang == Settings.downloadSubtitle) {
               suburl = i.url;
               break;
