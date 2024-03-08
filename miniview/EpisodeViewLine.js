@@ -14,6 +14,7 @@ export default function EpisodeViewLine(props) {
 
   async function downloader() {
     setStatus(true);
+    console.log('d');
     Downloader.addItem(CurrentEpisode.episode_id,CurrentEpisode,props.title);
     const intervalId=setInterval(() => {
       if(!Downloader.isProcessing(CurrentEpisode.episode_id)){

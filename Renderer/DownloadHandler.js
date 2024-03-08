@@ -30,8 +30,10 @@ export class Downloader {
               break;
             }
           }
+
+          if(!vidurl) vidurl=d?.sources[0];
+
           for (i of d?.subtitles) {
-            console.log(i.lang == Settings.downloadSubtitle);
             if (i.lang == Settings.downloadSubtitle) {
               suburl = i.url;
               break;

@@ -22,11 +22,12 @@ import Demo from "./miniview/Demo";
 import PlayerMiniEpisodeView from "./miniview/PlayerMiniEpisodeView";
 import { Downloader } from "./Renderer/DownloadHandler";
 import { DataBase } from "./Renderer/UserDataBase";
+import { getPlayableSources } from "./Renderer/SourceParser";
 
 const maxwidth= Math.max(Dimensions.get("screen").width,Dimensions.get("screen").height);
 const maxheight=Math.min(Dimensions.get("screen").width,Dimensions.get("screen").height);
 const urlme='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
-let Source, audio, currentAudio;
+let Source, audio, currentAudio,Settings;
 
 export default function Player({navigation, route}) {
   const Episodes=route.params.Episodes;
@@ -56,44 +57,34 @@ export default function Player({navigation, route}) {
   async function loadData() {
     audio=[];currentAudio='sub';Source={};
     try {
-      const Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
+      Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
       currentAudio=Settings.playbackAudio;
-      // const d=await pullserver(CurrentEpisode.episode_id,Settings.playbackAudio);
-      // for(i of d?.sources){
-      //   if(i.quality==Settings.playbackQuality){
-      //     vidurl=i.url;
-      //     break;
-      //   }
-      // }
-      // for (i of d?.subtitles) {
-      //   if (i.lang == Settings.playbackSubtitle) {
-      //     suburl = i.url;
-      //     break;
-      //   }
-      // }
 
-      Source = await getStreams(CurrentEpisode);
+      Source = await getPlayableSources(CurrentEpisode.episode_id);
       setSourceData(Source);
       if(Source.sub.length != 0) audio.push('sub');
       if(Source.dub.length != 0) audio.push('dub');
-      if(Source.sub.length==0) currentAudio='dub';
-      setCurrentUrl(Source.sub.length==0?Source.dub.at(0).url:Source.sub.at(0).url);
       currentAudio=Source[currentAudio].length==0?(currentAudio=='sub'?'dub':'sub'):currentAudio;
-      setCurrentUrl()
+      let vidurl;
       for(let i of Source[currentAudio]){
         if(i.quality.toLowerCase()==Settings.playbackQuality.toLowerCase()){
-          setCurrentUrl(i.url);
+          vidurl=i.url;
           break;
         }
       }
+      if(vidurl==null){vidurl=Source[currentAudio][0].url};
+      if(!vidurl){
+        vidurl=Source[currentAudio][0]
+      }
+      setCurrentUrl(vidurl);
       for(i of Source?.subtitles){
-        if(i.lang=='English'){
+        if(i.lang==Settings.playbackSubtitle){
           setSubtitleUrl(i.url);
           break;
         }
       }
       setSubtitleSource(Source?.subtitles);
-      setVidSource(Source?.sub.length==0?Source.dub:Source.sub);
+      setVidSource(Source[currentAudio]);
     } catch (err) {
       console.log('Error in pulling source',err);
       ToastAndroid.show('Error Fetching Playable Sources', ToastAndroid.SHORT);
@@ -113,8 +104,8 @@ export default function Player({navigation, route}) {
       }
     });
   const singleTap = Gesture.Tap().onStart((event) => {
-    const W=Dimensions.get("screen").width;
-    const H=Dimensions.get("screen").height;
+    const W=maxwidth;
+    const H=maxheight;
     const X = event.absoluteX;
     const Y = event.absoluteY;
     if(control){
@@ -154,7 +145,7 @@ export default function Player({navigation, route}) {
     }
     if(timeinsec>Source?.intro?.start && timeinsec<Source?.intro?.end){
       setshowskiptbtn({visible:true,totime:Source.intro.end});
-    }else if(timeinsec>Source.outro?.start && timeinsec<Source.outro?.end){
+    }else if(timeinsec>Source?.outro?.start && timeinsec<Source?.outro?.end){
       setshowskiptbtn({visible:true,totime:Source.outro.end});
     }else{
       setshowskiptbtn({visible:false,totime:null});
@@ -175,14 +166,14 @@ export default function Player({navigation, route}) {
       activateKeepAwakeAsync();
     }
   }
-  
   function formatTime(timeInMillis) {
     if (!isNaN(timeInMillis)) {
       const totalSeconds = Math.floor(timeInMillis / 1000);
-      const minutes = Math.floor(totalSeconds / 60);
+      const minutes = Math.floor(totalSeconds / 60) % 60;
       const seconds = totalSeconds % 60;
-
-      return `${minutes < 10 ? "0" : ""}${minutes}:${
+      const hours=  Math.floor((totalSeconds / 60) / 60);
+  
+      return `${hours?(hours+':'):''}${minutes < 10 ? "0" : ""}${minutes}:${
         seconds < 10 ? "0" : ""
       }${seconds}`;
     }
@@ -190,8 +181,18 @@ export default function Player({navigation, route}) {
   };
   function switchAudio(type) {
     currentAudio=type;
+    let vidurl;
     setVidSource(Source[type]);
-    setVideo(Source[type][0].url);
+    for(let i of Source[type]){
+      if(i.quality.toLowerCase()==Settings?.playbackQuality.toLowerCase()){
+        vidurl=i.url;
+        break;
+      }
+    }
+    if(!vidurl){
+      vidurl=Source[type][0];
+    }
+    setVideo(vidurl);
   }
   function lunchEpisode(id) {
     if(id!=route.params.index)
@@ -207,7 +208,7 @@ export default function Player({navigation, route}) {
     }else{
       newPosition = Math.min(vidstatus?.positionMillis + time,vidstatus?.durationMillis);
     }
-    vid.current.setPositionAsync(newPosition);
+    vid?.current?.setPositionAsync(newPosition);
   }
   function skiptotime(time) {
     time*=1000;
@@ -317,10 +318,12 @@ export default function Player({navigation, route}) {
 
           <Pressable style={{ flex: 1 }}>
             {subtitleUrl!=null?
-            <SubtitleView 
-            containerStyle={textstyle.subtitle}
-            currentTime={vidstatus?.positionMillis}
-            source={{url:subtitleUrl}}/>:<></>}
+              <SubtitleView 
+                containerStyle={textstyle.subtitle}
+                currentTime={vidstatus?.positionMillis}
+                source={{url:subtitleUrl}}
+                />:<></>
+            }
             {control?
             <View style={{ flex: 1, backgroundColor: "#0004"}}>
               <LinearGradient style={{flex:1,paddingVertical:20,paddingHorizontal:10}} colors={['#0009','#0002','#0002','#0002','#0009']}>
@@ -346,9 +349,9 @@ export default function Player({navigation, route}) {
               <View style={{flex:1,marginTop:'auto',overflow:'visible'}}>
               {showskipbtn.visible?
               <Pressable style={{backgroundColor:'#f204',borderRadius:10,alignSelf:'baseline',marginLeft:'auto',marginRight:'3%'}} onPress={()=>skiptotime(showskipbtn.totime)}><Text style={[textstyle.white,{paddingHorizontal:30,paddingVertical:12}]}>Skip OP/ED</Text></Pressable>:<></>}
-              <View style={{ flexDirection: "row", marginHorizontal: 15,marginTop:'auto'}}>
-                <Text style={textstyle.white}>{formatTime(sliderValue * 1000)}</Text>
-                <View style={{alignContent: "center",width: "90%",paddingHorizontal: 20,}}>
+              <View style={{ flexDirection: "row", paddingHorizontal: 15,marginTop:'auto',width:maxwidth-20,justifyContent:'center'}}>
+                <Text style={[textstyle.white]}>{formatTime(sliderValue * 1000)}</Text>
+                <View style={{width: "88%",paddingHorizontal: 10}}>
                   <Slider
                     maximumValue={TotalDuration / 1000}
                     minimumValue={0}
@@ -393,8 +396,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   player:{
-    width:Math.max(maxheight,maxwidth),
-    height:Math.min(maxheight,maxwidth)
+    width:maxwidth,
+    height:maxheight
   }
 });
 const textstyle=StyleSheet.create({

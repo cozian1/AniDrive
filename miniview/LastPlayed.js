@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { DataBase } from "../Renderer/UserDataBase";
+import { useEffect } from "react";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("screen").width;
@@ -17,7 +18,7 @@ export default function LastPlayed(props) {
 	}
 
   return (
-		<Pressable onLongPress={()=>Navigation.push('Details', {id: props.id,data:props})} style={[styles.box,props.style]} onPress={()=>{Navigation.push('Details', {id: props.id,data:props,isWatch:true});}}>
+		<Pressable onLongPress={()=>Navigation.push('Details', {id: props.id,data:{id:props.id, name:props.name, src:props.src, type:props.type}})} style={[styles.box,props.style]} onPress={()=>{Navigation.push('Details', {id: props.id,data:{id:props.id, name:props.name, src:props.src, type:props.type},isWatch:true});}}>
 			<ImageBackground
         style={styles.img}
         imageStyle={{ borderRadius: 15 }}

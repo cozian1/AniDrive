@@ -1,5 +1,6 @@
 const Cheerio = require("cheerio");
 //import CryptoJS from 'crypto-js';
+//eas build -p android --profile preview
 const CryptoJS = require("crypto-js");
 
 let Megacloud = {
@@ -20,7 +21,7 @@ let Rabbitstream = {
   embed: "/ajax/embed-4/",
   key: "https://raw.githubusercontent.com/theonlymo/keys/e4/key",
 };
-const BaseUrl = "https://aniwatch.to";
+const BaseUrl = "https://hianime.to";
 
 async function filterscraper() {
   try {
@@ -67,3 +68,49 @@ async function filterscraper() {
     console.log(err);
   }
 }
+function getPaths() {
+  return {
+    recently_updated: "/recently-updated",
+    most_popular: "/most-popular",
+    top_airing: "/top-airing",
+    most_favorite: "/most-favorite",
+    movie: "/movie",
+  };
+}
+
+async function scrapePages(path, page = 1) {
+  path=path.trim().replaceAll(' ','-');
+  try {
+    const res = await fetch(BaseUrl + path + "?page=" + page);
+    const data = await res.text();
+    let list = aniScraper(data);
+    return list;
+  } catch (err) {
+    console.log("Failed to fetch " + path, err);
+  }
+}
+function aniScraper(data) {
+  const $ = Cheerio.load(data);
+  let list = [];
+  $("div.film_list-wrap > div").each((i, el) => {
+    list.push({
+      id: $(el).find("div.film-poster > a").attr("href").slice(1),
+      Name: $(el).find("h3.film-name").text(),
+      img: $(el).find("div.film-poster > img").attr("data-src"),
+      type: $(el).find("span.fdi-item").first().text(),
+    });
+  });
+  return list;
+}
+async function allscraper() {
+  let paths=Object.values(getPaths());
+  const fetchPromises = paths.map(path => fetch(BaseUrl + path + "?page=" + 1).then(res => res.text()).then(res => aniScraper(res)).catch(err=>console.log(err)));
+  const response=await Promise.all(fetchPromises)//.then(res => {console.log(res[0]); return res;});
+  const data={};
+  for(let i in paths){
+    data[paths[i].substring(1)]=response[i];
+  }
+  console.log(Object.keys(data));
+}
+
+//allscraper();

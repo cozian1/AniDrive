@@ -61,7 +61,7 @@ export default function ProfileScreen({ navigation, route }) {
 	);
 	const downloadSettings=(
 		<View>
-			<View style={{flexDirection:'row',width:screenWidth}}>
+			<View style={{flexDirection:'row',width:screenWidth,height:50}}>
 				<Text style={[styles.text,{marginStart:15}]}>Download With 1DM</Text>
 				<Switch
 					style={{marginStart:'auto',marginHorizontal:15}}

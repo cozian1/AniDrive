@@ -16,7 +16,7 @@ import {
   UIActivityIndicator,
   WaveIndicator,
 } from 'react-native-indicators';
-import { getPaths, scrapePages, scrapeSlider } from "./Renderer/ZoroHome";
+import { allscraper, getPaths, scrapePages, scrapeSlider } from "./Renderer/ZoroHome";
 import { DataBase } from "./Renderer/UserDataBase";
 
 const maxwidth=Dimensions.get("screen").width;
@@ -32,8 +32,9 @@ export default function SplashScreen({navigation,route}) {
         DataBase.setUpDatabase();
         Data={
           slider:await scrapeSlider(),
-          recent:await scrapePages(paths.recently_updated),
-          popular:await scrapePages(paths.most_popular),
+          //recent:await scrapePages(paths.recently_updated),
+          //popular:await scrapePages(paths.most_popular),
+          data: await allscraper(),
         }
         let settings=await DataBase.Settings.getSettings();
         if(settings.length==0){

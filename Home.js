@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import ImgBox from "./miniview/ImgBox";
 import { useEffect, useState } from "react";
-import { scrapePages, getPaths, scrapeSlider } from "./Renderer/ZoroHome";
+import { scrapePages, getPaths, scrapeSlider, allscraper } from "./Renderer/ZoroHome";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { StackActions } from '@react-navigation/native';
@@ -41,25 +41,27 @@ export default function Home({ navigation, route }) {
   const [refresh, setRefresh] = useState(false);
   const paths = getPaths();
 
-  //let list=[scrapeSlider(),scrapePages(paths.recently_updated),scrapePages(paths.most_popular),scrapePages(paths.top_airing),scrapePages(paths.movie)];
   async function loadData(refresh=false) {
     try{
       if(refresh){
         setRefresh(true);
         setSlider(await scrapeSlider());
-        setrecent(await scrapePages(paths.recently_updated));
-        setpopular(await scrapePages(paths.most_popular));
+        const homedata= await allscraper();
+        setrecent(homedata?.['recently-updated']);
+        setpopular(homedata?.['most-popular']);
+        setairing(homedata?.['top-airing']);
+        setMovies(homedata?.['movie']);
       }else{
         const { data } = route.params;
         setSlider(data?.slider);
-        setrecent(data?.recent);
-        setpopular(data?.popular);
+        setrecent(data?.data?.['recently-updated']);
+        setpopular(data?.data?.['most-popular']);
+        setairing(data?.data?.['top-airing']);
+        setMovies(data?.data?.['movie']);
       }
-      setairing(await scrapePages(paths.top_airing));
-      setMovies(await scrapePages(paths.movie));
-      setRefresh(false);
       await loadLastPlayed();
-    }catch(e){ console.warn('Error in loadData '+refresh)}
+    }catch(e){ console.log('Error in loadData '+refresh)}
+    setRefresh(false);
   }
   async function loadLastPlayed(){
     setLastPlayed(await DataBase.WATCHHISTORY.getWatchHistory());

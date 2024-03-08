@@ -1,6 +1,8 @@
+import { pullserver } from "./SourceParser";
+
 const Cheerio = require("cheerio");
 
-const BaseUrl = "https://aniwatch.to";
+const BaseUrl = "https://hianime.to";
 
 function aniScraper(data) {
   const $ = Cheerio.load(data);
@@ -49,6 +51,17 @@ export function getPaths() {
     movie: "/movie",
   };
 }
+export async function allscraper() {
+  let paths=Object.values(getPaths());
+  const fetchPromises = paths.map(path => fetch(BaseUrl + path + "?page=" + 1).then(res => res.text()).then(res => aniScraper(res)).catch(err=>console.log(err)));
+  const response=await Promise.all(fetchPromises)//.then(res => {console.log(res[0]); return res;});
+  const data={};
+  for(let i in paths){
+    data[paths[i].substring(1)]=response[i];
+  }
+  return data;
+}
+
 
 export async function scrapeSlider() {
   try {
@@ -150,6 +163,7 @@ export async function getEpisodeData(id) {
 }
 export async function getAnimeInfo(Id) {
   try {
+    Id=Id.replace('watch/','');
     const res = await fetch(BaseUrl+'/'+Id);
     const data = await res.text();
 
@@ -157,7 +171,7 @@ export async function getAnimeInfo(Id) {
     let map = new Map();
     let { mal_id, anilist_id ,anime_id} = JSON.parse($('#syncData').text());
     if(anilist_id==''){
-      anilist_id= await getAniListId(mal_id).catch((e)=>console.log(e));
+      //anilist_id= await getAniListId(mal_id).catch((e)=>console.log(e));
     }
     let skip= [
       "",

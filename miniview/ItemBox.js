@@ -15,6 +15,7 @@ export default function ItemBox(props) {
     <Pressable
       style={styles.container}
       onPress={() => {
+        console.log(props);
         Navigation.push('Details', {id: props.id,data:props});
       }}
     >
