@@ -121,7 +121,7 @@ export default function Player({navigation, route}) {
     });
 
   function setVideo(url) {
-    let x=vidstatus.positionMillis;
+    let x=vidstatus?.positionMillis;
     setsliderValue(1);
     setCurrentUrl(null);
     setTimeout(() => {
@@ -361,7 +361,7 @@ export default function Player({navigation, route}) {
                     trackStyle={iosStyles.track}
                     value={sliderValue}
                     onValueChange={(o) => {
-                      vid?.current.setPositionAsync(o * 1000);
+                      vid?.current?.setPositionAsync(o * 1000);
                       setsliderValue(o);
                     }}
                   />

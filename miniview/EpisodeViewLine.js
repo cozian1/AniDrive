@@ -24,7 +24,7 @@ export default function EpisodeViewLine(props) {
     }, 500);
   }
 
-  useEffect(() => {}, []);
+  useEffect(() => {console.log(Episodes[props.index]?.img);}, []);
   return (
     <View style={styles.box}>
       <Pressable style={styles.details} onPress={()=>props.lunchPlayer(props.index)}>

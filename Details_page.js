@@ -182,7 +182,7 @@ export default function Details_page({ navigation, route }) {
           <EpisodeViewLine
             Episodes={Details.episodes}
             title={Details.title}
-            img={Details?.image}
+            img={item?.img}
             index={index}
             lunchPlayer={LunchPlayer}
           />
@@ -217,7 +217,7 @@ export default function Details_page({ navigation, route }) {
         <View style={{ flex: 5.2 }}>
           <ImageBackground
             style={{ height: (screenHeight * 3) / 8 }}
-            source={{ uri: Details?.image.replace("300x400", "1366x768") }}>
+            source={{ uri: Details?.image.extraLarge }}>
             
             <LinearGradient style={{ flex: 1 }} colors={["#002","#0024","#0027", "#002"]}>
               <View style={{ flexDirection: "row", marginTop: "auto" }}>
@@ -226,7 +226,7 @@ export default function Details_page({ navigation, route }) {
                     <ImageBackground
                       style={{ width: "100%", height: "100%" }}
                       imageStyle={{ borderRadius: 15 }}
-                      source={{ uri: Details?.image }}
+                      source={{ uri: Details?.image.large }}
                     ></ImageBackground>
                   </View>
                 </View>

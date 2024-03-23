@@ -23,6 +23,7 @@ const BaseUrl = "https://hianime.to";
 
 export async function pullserver(episode_id,type='sub') {
   console.log('dd');
+  let response;
   let data = await fetch(
     BaseUrl + "/ajax/v2/episode/servers?episodeId=" + episode_id
   ).then((res) => res.json());
@@ -39,17 +40,13 @@ export async function pullserver(episode_id,type='sub') {
   console.log(servers);
 
   for(let server of servers){
-    if(type==server.type ){//&& ['MegaCloud','Vidstreaming'].includes(server.name)){
+    if([type,'raw'].includes(server.type)){//&& ['MegaCloud','Vidstreaming'].includes(server.name)){
       data = await fetch(BaseUrl + "/ajax/v2/episode/sources?id=" + server.id).then((res) => res.json());
       server.serverId = data.link.split("?")[0].split("/").pop();
-      return await MegacloudScrapper(server.serverId);
-    }
-  }
-  for(let server of servers){
-    if('raw'==server.type ){//&& ['MegaCloud','Vidstreaming'].includes(server.name)){
-      data = await fetch(BaseUrl + "/ajax/v2/episode/sources?id=" + server.id).then((res) => res.json());
-      server.serverId = data.link.split("?")[0].split("/").pop();
-      return await MegacloudScrapper(server.serverId);
+      response= await MegacloudScrapper(server.serverId);
+      if(response){
+        return response;
+      }
     }
   }
   return undefined;
