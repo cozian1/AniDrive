@@ -68,13 +68,11 @@ export default function Details_page({ navigation, route }) {
     
   }
   async function LunchPlayer(index,time=0) {
-    route.params.isWatch?null:await DataBase.WATCHHISTORY.addRecord(AnimeDetails?.episodes[index],route.params.data).catch((err)=>{console.log(err)});
-
+    route.params.isWatch?null:DataBase.WATCHHISTORY.addRecord(AnimeDetails?.episodes[index],route.params.data).catch((err)=>{console.log(err)});
     navigation.navigate('Player', {Episodes:AnimeDetails?.episodes,index:index,title:AnimeDetails?.title,playbackTime:time});
   }
   async function watchClick() {
     let lastplayed=await DataBase.WATCHHISTORY.getPlaybackData(AnimeDetails?.alID).catch((err)=>{console.log(err)});
-    console.log(lastplayed);
     if(lastplayed.length==0){
       LunchPlayer(0);
     }else{

@@ -1,12 +1,7 @@
 const Cheerio = require("cheerio");
 const CryptoJS = require("crypto-js");
+import { MegaCloud } from "../Extractors/MegaCloud";
 
-let Megacloud = {
-  name: "Megacloud",
-  mainUrl: "https://megacloud.tv",
-  embed: "/embed-2/ajax/e-1/getSources",
-  key: "https://zoro.anify.tv/key/6", //"https://raw.githubusercontent.com/theonlymo/keys/e1/key",
-};
 let Dokicloud = {
   name: "Dokicloud",
   mainUrl: "https://dokicloud.one",
@@ -22,7 +17,7 @@ let Rabbitstream = {
 const BaseUrl = "https://hianime.to";
 
 export async function pullserver(episode_id,type='sub') {
-  console.log('dd');
+  console.log('cat');
   let response;
   let data = await fetch(
     BaseUrl + "/ajax/v2/episode/servers?episodeId=" + episode_id
@@ -37,13 +32,12 @@ export async function pullserver(episode_id,type='sub') {
       name: $(el).find("a.btn").text(),
     });
   });
-  console.log(servers);
 
   for(let server of servers){
     if([type,'raw'].includes(server.type)){//&& ['MegaCloud','Vidstreaming'].includes(server.name)){
       data = await fetch(BaseUrl + "/ajax/v2/episode/sources?id=" + server.id).then((res) => res.json());
       server.serverId = data.link.split("?")[0].split("/").pop();
-      response= await MegacloudScrapper(server.serverId);
+      response= await MegaCloud.Extract(server.serverId);
       if(response){
         return response;
       }
@@ -51,6 +45,7 @@ export async function pullserver(episode_id,type='sub') {
   }
   return undefined;
 }
+/*
 export async function MegacloudScrapper(serverId){
   data = await fetch(Megacloud.mainUrl + Megacloud.embed + "?id=" + serverId).then((res) => res.json());
   const decryptKey = await fetch(Megacloud.key).then((res) => res.json());
@@ -102,9 +97,10 @@ export async function MegacloudScrapper(serverId){
     return undefined;
   }
 }
-
+*/
 // let d=async ()=> console.log(await pullserver(106611,'sub'));
 // d();
+
 export async function getPlayableSources(EpisodeId) {
   //const data=await Promise.all([pullserver(EpisodeId,'sub'),pullserver(EpisodeId,'dub')]);
   let data=[];
@@ -124,4 +120,4 @@ export async function getPlayableSources(EpisodeId) {
   }
   return Response;
 }
-//getPlayableSources(109143);
+//pullserver(109143);

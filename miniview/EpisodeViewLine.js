@@ -14,7 +14,6 @@ export default function EpisodeViewLine(props) {
 
   async function downloader() {
     setStatus(true);
-    console.log('d');
     Downloader.addItem(CurrentEpisode.episode_id,CurrentEpisode,props.title);
     const intervalId=setInterval(() => {
       if(!Downloader.isProcessing(CurrentEpisode.episode_id)){
@@ -24,11 +23,11 @@ export default function EpisodeViewLine(props) {
     }, 500);
   }
 
-  useEffect(() => {console.log(Episodes[props.index]?.img);}, []);
+  useEffect(() => {}, []);
   return (
     <View style={styles.box}>
       <Pressable style={styles.details} onPress={()=>props.lunchPlayer(props.index)}>
-        <ImageBackground blurRadius={5} source={{uri : props.img}} style={{flex:1}}>
+        <ImageBackground blurRadius={5} source={{uri : props.img}} style={{flex:1,backgroundColor:'#333'}}>
             <View style={styles.inner1}>
                 <Image source={{uri:props.img}} style={styles.innerimg}/>
                 <Text numberOfLines={3} style={[styles.text,styles.title]}>{CurrentEpisode.title}</Text>

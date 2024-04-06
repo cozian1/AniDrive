@@ -30,10 +30,12 @@ export default function Search_page({ navigation, route }) {
 
   async function load() {
     setSpinner(true);
-    await scrapeSearch(searchText)
-      .then((res)=>setresults(res))
+    scrapeSearch(searchText)
+      .then((res)=>{
+        setresults(res);
+        setSpinner(false);
+      })
       .catch( (e) => {console.warn("Error in search call", e);});
-    setSpinner(false);
   }
   useEffect(() => {
     load();

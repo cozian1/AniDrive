@@ -32,14 +32,17 @@ export async function scrapePages(path, page = 1) {
 
 export async function scrapeSearch(keyword,page=1) {
   console.log(keyword);
+  let list =[];
+  if (keyword.trim()=='') return list;
   try {
     const res = await fetch(BaseUrl + '/search?keyword='+keyword + "&page=" + page)
     const data=await res.text();
-    let list = aniScraper(data);
+    list = aniScraper(data);
     return list;
   } catch (err) {
     console.log("Failed to fetch " + path, err);
   }
+  return list;
 }
 
 export function getPaths() {
@@ -161,7 +164,9 @@ export async function getEpisodeData(id) {
     console.log("fetching episode error", e);
   }
 }
-
+/**
+@depriciated
+ */
 export async function getAnimedataOld(Id) {
   try {
     Id=Id.replace('watch/','');
@@ -254,6 +259,7 @@ export async function getAnimedataOld(Id) {
     console.warn("Failed to fetch info", err);
   }
 }
+
 
 export async function getAnimeInfo(Id) {
   try {
@@ -368,13 +374,12 @@ export async function getAnimeInfo(Id) {
     anilistdata?.streamingEpisodes?.forEach(e => {
       episodedata.set(Number(e.title.split(' ')[1]),e.thumbnail)
     });
-
     const $$ =  Cheerio.load(episodes.html);
-    info.totalEpisodes = $$('div.detail-infor-content > div > a').length+'/'+anilistdata ? anilistdata?.episodes:' ? ';
     info.episodes = [];
     $$('div.detail-infor-content > div > a').each((i, el) => {
       info.episodes?.push({
         episode_id:$$(el).attr("data-id"),
+        AniId:info.alID,
         id: $$(el).attr('href'),
         number: parseInt($$(el).attr('data-number')),
         title: $$(el).attr('title'),
@@ -382,6 +387,7 @@ export async function getAnimeInfo(Id) {
         img:episodedata.has(parseInt($$(el).attr('data-number')))?episodedata.get(parseInt($$(el).attr('data-number'))):info.image.medium
       });
     });
+    info.totalEpisodes = [info.episodes.length,anilistdata? anilistdata.episodes : '?'].join('/');
     return info;
   } catch (err) {
     console.warn("Failed to fetch info", err);

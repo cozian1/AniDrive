@@ -27,12 +27,13 @@ import { getPlayableSources } from "./Renderer/SourceParser";
 const maxwidth= Math.max(Dimensions.get("screen").width,Dimensions.get("screen").height);
 const maxheight=Math.min(Dimensions.get("screen").width,Dimensions.get("screen").height);
 const urlme='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
-let Source, audio, currentAudio,Settings;
+let Source, audio, currentAudio,Settings,currentQuality;
 
 export default function Player({navigation, route}) {
   const Episodes=route.params.Episodes;
   const CurrentEpisode=Episodes[route.params.index];
   const resizemodes=[ResizeMode.CONTAIN,ResizeMode.STRETCH];
+  let playtime;
 
   const [control,showcontrol]=useState(true);
   const [vidstatus,setvidstatus]=useState();
@@ -121,27 +122,35 @@ export default function Player({navigation, route}) {
     });
 
   function setVideo(url) {
-    let x=vidstatus?.positionMillis;
+    playtime=vidstatus?.positionMillis;
     setsliderValue(1);
     setCurrentUrl(null);
     setTimeout(() => {
       setCurrentUrl(url);
-      vid.current.setPositionAsync(x);
-    }, 300);
+      vid.current.setPositionAsync(playtime);
+      skiptotime(playtime/1000);
+    }, 200);
   }
   function loadEssentials(stat) {
     showcontrol(false);
     setvidstatus(stat);
     setTotalDuration(stat?.durationMillis);
-    skiptotime(route.params.playbackTime?route.params.playbackTime/1000:0);
+    if(route.params.playbackTime){
+      skiptotime(route.params.playbackTime/1000);
+      route.params.playbackTime=null;
+    }
   }
   function setStat(stat) {
     let timeinsec=stat.positionMillis/1000;
     setvidstatus(stat);
     setsliderValue(timeinsec);
     if(stat.didJustFinish){
-      if(route.params.index+1<Episodes.length)
+      if(route.params.index+1<Episodes.length){
         navigation.replace('Player', {Episodes:Episodes,index:route.params.index+1});
+      }else{
+        ToastAndroid.show('No More Episodes', ToastAndroid.SHORT);
+        navigation.goBack();
+      }
     }
     if(timeinsec>Source?.intro?.start && timeinsec<Source?.intro?.end){
       setshowskiptbtn({visible:true,totime:Source.intro.end});
@@ -156,7 +165,6 @@ export default function Player({navigation, route}) {
       }
     }
   }
-
   function pause_play() {
     if(vidstatus?.isPlaying){
       vid.current.pauseAsync();
@@ -215,6 +223,15 @@ export default function Player({navigation, route}) {
     if(!vid) return;
     vid.current.setPositionAsync(time);
   }
+  function changeQuality(url) {
+    for(let i of Source[currentAudio]){
+      if(i.url==url){
+        Settings.playbackQuality=i.quality;
+        setVideo(url);
+        break;
+      }
+    }
+  }
 
 
   const QualityModal=(<View style={[styles.player,{ flexDirection:'row',justifyContent:'flex-end',position:'absolute'}]}>
@@ -225,7 +242,7 @@ export default function Player({navigation, route}) {
         contentContainerStyle={{alignItems:'center'}}
         data={VidSource}
         renderItem={({ item }) => (
-          <Modelitembox style={[{width:maxwidth/3},item.url==CurrentUrl?{backgroundColor:'#F00'}:{}]} text={item.quality} url={item.url} callback={setVideo} />
+          <Modelitembox style={[{width:maxwidth/3},item.url==CurrentUrl?{backgroundColor:'#F00'}:{}]} text={item.quality} url={item.url} callback={changeQuality} />
         )}
       />
     </View>
@@ -283,7 +300,7 @@ export default function Player({navigation, route}) {
     return () =>{
       ScreenOrientation.unlockAsync();
       NavigationBar.setVisibilityAsync('visible');
-      deactivateKeepAwake();
+      //deactivateKeepAwake();
     }
   },[])
   

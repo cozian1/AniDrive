@@ -13,6 +13,10 @@ export default function SubtitleView({ source, currentTime, containerStyle = {},
   }
 
   useEffect(()=>{
+
+  },[]);
+
+  useEffect(()=>{
     LoadSub();
   },[source.url]);
 
@@ -52,13 +56,16 @@ export default function SubtitleView({ source, currentTime, containerStyle = {},
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    padding:3
   },
   text:{
-    fontSize:15,
+    fontSize:16,
     textShadowColor: '#000',
-    textShadowRadius: 10,
+    textShadowRadius: 4,
+    textShadowOffset:{width: 0.8},
+    includeFontPadding:true,
     color:'#fff',
-    fontWeight:'400',
+    fontWeight:'600',
     alignSelf:'center',
     marginTop:'auto',
     textAlign:'center'
