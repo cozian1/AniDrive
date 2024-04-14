@@ -25,7 +25,6 @@ const maxheight=Dimensions.get("screen").height;
 
 export default function SplashScreen({navigation,route}) {
   async function prepare() {
-    await pullserver(109143);
     let Data={};
     NavigationBar.setVisibilityAsync('hidden');
     NavigationBar.setBehaviorAsync('overlay-swipe');
