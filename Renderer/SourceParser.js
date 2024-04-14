@@ -1,27 +1,25 @@
+//import Cheerio from "cheerio";
+//import CryptoJS  from"crypto-js";
+import { MegaCloud } from "../Extractors/MegaCloud";
+import { KaidoRapidCloud } from "../Extractors/KaidoRapidCloud";
 const Cheerio = require("cheerio");
 const CryptoJS = require("crypto-js");
-import { MegaCloud } from "../Extractors/MegaCloud";
 
-let Dokicloud = {
-  name: "Dokicloud",
-  mainUrl: "https://dokicloud.one",
-  embed: "/ajax/embed-4/",
-  key: "https://raw.githubusercontent.com/theonlymo/keys/e4/key",
-};
-let Rabbitstream = {
-  name: "Rabbitstream",
-  mainUrl: "https://rabbitstream.net",
-  embed: "/ajax/embed-4/",
-  key: "https://raw.githubusercontent.com/theonlymo/keys/e4/key",
-};
-const BaseUrl = "https://hianime.to";
+const BaseUrl =[
+  {
+    host:"https://kaido.to",
+    server:'/ajax/episode/servers?episodeId=',
+    sources:'/ajax/episode/sources?id=',
+  },{
+    host:'https://hianime.to',
+    server:'/ajax/v2/episode/servers?episodeId=',
+    sources:'/ajax/v2/episode/sources?id=',
+  }
+];
 
-export async function pullserver(episode_id,type='sub') {
-  console.log('cat');
+export async function pullserver(episode_id,type='sub',mode=0) {
   let response;
-  let data = await fetch(
-    BaseUrl + "/ajax/v2/episode/servers?episodeId=" + episode_id
-  ).then((res) => res.json());
+  let data = await fetch(BaseUrl[mode].host + BaseUrl[mode].server + episode_id).then((res) => res.json()).catch(err => {throw 'error in getting server list call-mode:'+mode});
 
   const $ = Cheerio.load(data.html);
   const servers = [];
@@ -32,80 +30,21 @@ export async function pullserver(episode_id,type='sub') {
       name: $(el).find("a.btn").text(),
     });
   });
-
   for(let server of servers){
     if([type,'raw'].includes(server.type)){//&& ['MegaCloud','Vidstreaming'].includes(server.name)){
-      data = await fetch(BaseUrl + "/ajax/v2/episode/sources?id=" + server.id).then((res) => res.json());
+      data = await fetch(BaseUrl[mode].host + BaseUrl[mode].sources + server.id).then((res) => res.json()).catch(err => {throw 'error in getting iframe server code call-mode:'+mode});
       server.serverId = data.link.split("?")[0].split("/").pop();
-      response= await MegaCloud.Extract(server.serverId);
+      response= mode==0?await KaidoRapidCloud.Extract(server.serverId):await MegaCloud.Extract(server.serverId);
       if(response){
         return response;
       }
     }
   }
-  return undefined;
+  return mode==0?await pullserver(episode_id,type,1):undefined;
 }
-/*
-export async function MegacloudScrapper(serverId){
-  data = await fetch(Megacloud.mainUrl + Megacloud.embed + "?id=" + serverId).then((res) => res.json());
-  const decryptKey = await fetch(Megacloud.key).then((res) => res.json());
-  let sources = "";
-  try {
-    if (data.encrypted) {
-      const encryptedURLTemp = data.sources?.split("");
-      let key = "";
-
-      for (const index of JSON.parse(decryptKey.key)) {
-        for (let i = Number(index[0]); i < Number(index[1]); i++) {
-          key += encryptedURLTemp[i];
-          encryptedURLTemp[i] = "";
-        }
-      }
-      sources = encryptedURLTemp.filter((x) => x !== "").join("");
-      try {
-        [sources] = JSON.parse(CryptoJS.AES.decrypt(sources, key).toString(CryptoJS.enc.Utf8));
-      } catch (e) {
-        console.error(e);
-        sources = "";
-      }
-    }else{
-      sources=JSON.parse(data?.sources);
-    }
-    const meta =await fetch(sources.file).then((res)=>res.text());
-    const regex = /RESOLUTION=(\d+x\d+)[\s\S]*?\n(index[^\\n]+?\.m3u8)/g;
-    let match;
-    let vid=[{url:sources.file,quality:'auto'}];
-    while ((match = regex.exec(meta)) !== null) {
-      const resolution = match[1];
-      const index = match[2];
-      vid.push({
-        url:sources.file.substring(0,sources.file.lastIndexOf('/')+1)+index ,
-        quality:resolution.split('x').pop()+'P'
-      });
-
-    }
-    data.sources=vid;
-    data.subtitles=[];
-    data?.tracks?.filter((val)=> val.kind=='captions').forEach(val => {data.subtitles.push({url:val.file,lang:val.label})});
-    delete data.tracks;
-    delete data.encrypted;
-    delete data.server;
-
-    return data;
-  } catch (err) {
-    console.warn(err);
-    return undefined;
-  }
-}
-*/
-// let d=async ()=> console.log(await pullserver(106611,'sub'));
-// d();
 
 export async function getPlayableSources(EpisodeId) {
-  //const data=await Promise.all([pullserver(EpisodeId,'sub'),pullserver(EpisodeId,'dub')]);
-  let data=[];
-  data.push(await pullserver(EpisodeId,'sub'));
-  data.push(await pullserver(EpisodeId,'dub'));
+  const data=await Promise.all([pullserver(EpisodeId,'sub'),pullserver(EpisodeId,'dub')]);
   const sub=data[0]?data[0].sources:[];
   const dub=data[1]?data[1].sources:[];
   const subtitle=data[0]?data[0].subtitles:data[1]?data[1].subtitles:[];
@@ -120,4 +59,6 @@ export async function getPlayableSources(EpisodeId) {
   }
   return Response;
 }
-//pullserver(109143);
+
+
+//pullserver(109143,'dub');

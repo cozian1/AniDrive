@@ -23,7 +23,6 @@ export class Downloader {
             ToastAndroid.show('No Resources found with Current settings', ToastAndroid.SHORT);
             continue;
           }
-          console.log(d);
           for(i of d?.sources){
             if(i.quality==Settings.downloadQuality){
               vidurl=i.url;

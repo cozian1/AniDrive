@@ -1,28 +1,25 @@
-//import CryptoJS  from "crypto-js";
-const CryptoJS = require("crypto-js");
 import { getData, setData } from "../Renderer/AsyncStorage";
 
+//import CryptoJS  from"crypto-js";
+const CryptoJS = require("crypto-js");
 
-export class MegaCloud {
-  static name = "Megacloud";
-  static mainUrl = "https://megacloud.tv";
-  static embed = "/embed-2/ajax/e-1/getSources";
-  static key = "https://zoro.anify.tv/key/6";
-  static altKey = "https://raw.githubusercontent.com/theonlymo/keys/e1/key";
-  static script = "https://megacloud.tv/js/player/a/prod/e1-player.min.js";
-  static sources = "https://megacloud.tv/embed-2/ajax/e-1/getSources?id=";
-  static keyStore='HiAnime_key';
+export class KaidoRapidCloud {
+  static name = "RapidCloud";
+  static mainUrl = "https://rapid-cloud.co";
+  static embed = "/ajax/embed-6-v2/getSources?id=";
+  static script = "https://rapid-cloud.co/js/player/prod/e6-player-v2.min.js";
+  static keyStore='Kaido_key';
   static refreshKey=false;
 
   static async Extract(id) {
-    console.log('MegaCloud');
+    console.log('KaidoRapidCloud');
     try {
-      const data = await fetch(this.sources + id, {
+      const data = await fetch(this.mainUrl+this.embed+ id, {
         headers: {
           Accept: "*/*",
           "X-Requested-With": "XMLHttpRequest",
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-          Referer: 'https://hianime.to',
+          Referer: 'https://kaido.to',
         },
       }).then((res) => res.json());
 
@@ -30,6 +27,7 @@ export class MegaCloud {
 
       const meta =await fetch(decrypted.file).then((res)=>res.text());
       const regex = /RESOLUTION=(\d+x\d+)[\s\S]*?\n(index[^\\n]+?\.m3u8)/g;
+
       let match;
       let vid=[{url:decrypted.file,quality:'auto'}];
       while ((match = regex.exec(meta)) !== null) {

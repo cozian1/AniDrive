@@ -52,6 +52,8 @@ export function getPaths() {
     most_favorite: "/most-favorite",
     most_popular: "/most-popular",
     movie: "/movie",
+    Completed: '/completed',
+    Newly_Added: '/recently-added',
   };
 }
 

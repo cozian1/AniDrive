@@ -16,15 +16,16 @@ import {
   UIActivityIndicator,
   WaveIndicator,
 } from 'react-native-indicators';
-import { allscraper, getPaths, scrapePages, scrapeSlider } from "./Renderer/ZoroHome";
+import { allscraper, scrapeSlider } from "./Renderer/ZoroHome";
 import { DataBase } from "./Renderer/UserDataBase";
+import { pullserver } from "./Renderer/SourceParser";
 
 const maxwidth=Dimensions.get("screen").width;
 const maxheight=Dimensions.get("screen").height;
 
 export default function SplashScreen({navigation,route}) {
-  const paths = getPaths();
   async function prepare() {
+    await pullserver(109143);
     let Data={};
     NavigationBar.setVisibilityAsync('hidden');
     NavigationBar.setBehaviorAsync('overlay-swipe');
@@ -32,8 +33,6 @@ export default function SplashScreen({navigation,route}) {
         DataBase.setUpDatabase();
         Data={
           slider:await scrapeSlider(),
-          //recent:await scrapePages(paths.recently_updated),
-          //popular:await scrapePages(paths.most_popular),
           data: await allscraper(),
         }
         let settings=await DataBase.Settings.getSettings();

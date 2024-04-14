@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import {Picker} from '@react-native-picker/picker';
 import { DataBase } from "./Renderer/UserDataBase";
+import * as Updates from 'expo-updates';
 
 
 const screenWidth = Dimensions.get("window").width;
@@ -125,6 +126,19 @@ export default function ProfileScreen({ navigation, route }) {
 		await DataBase.Settings.updateSettings(pbQuality,pbAudio,pbSubtitle,dlQuality,dlAudio,dlSubtitle);
 		ToastAndroid.show('Saved', ToastAndroid.SHORT);
 	}
+	async function onFetchUpdateAsync() {
+		try {
+		const update = await Updates.checkForUpdateAsync();
+
+		if (update.isAvailable) {
+			await Updates.fetchUpdateAsync();
+			await Updates.reloadAsync();
+		}
+		} catch (error) {
+		// You can also add an alert() to see the error message in case of an error when fetching updates.
+		alert(`Error fetching latest Expo update: ${error}`);
+		}
+	}
 	useEffect(() => {
 		async function load(){
 			const Settings=await DataBase.Settings.getSettings().then((res)=>res.pop());
@@ -158,6 +172,7 @@ export default function ProfileScreen({ navigation, route }) {
 					<Text style={[styles.item_text]}>Data Sync</Text>
 					<Pressable onPress={()=>null} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>MAL sync</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
 					<Pressable onPress={()=>null} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>AniList sync</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
+					<Pressable onPress={onFetchUpdateAsync} style={styles.items}><Text style={[styles.text,{fontSize:15}]}>Update App</Text><MaterialIcons style={{marginStart:'auto',transform:[{rotate: '180deg'}]}} name="arrow-back-ios" size={20} color="white"/></Pressable>
 				</ScrollView>
 			</View>
 			<TouchableOpacity activeOpacity={0.5} onPress={saveSettings} style={{position:'absolute',bottom:40,right:20,backgroundColor:'#57f',padding:10,borderRadius:10}}><Feather name="save" size={35} color="white" /></TouchableOpacity>
