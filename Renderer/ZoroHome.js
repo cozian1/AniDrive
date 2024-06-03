@@ -47,13 +47,13 @@ export async function scrapeSearch(keyword,page=1) {
 
 export function getPaths() {
   return {
-    top_airing: "/top-airing",
-    recently_updated: "/recently-updated",
-    most_favorite: "/most-favorite",
-    most_popular: "/most-popular",
-    movie: "/movie",
-    Completed: '/completed',
-    Newly_Added: '/recently-added',
+    recently_updated: "/Recently-Updated",
+    top_airing: "/Top-Airing",
+    most_popular: "/Most-Popular",
+    Completed: '/Completed',
+    Newly_Added: '/Recently-Added',
+    most_favorite: "/Most-Favorite",
+    movie: "/Movie",
   };
 }
 

@@ -47,17 +47,17 @@ export default function Home({ navigation, route }) {
         setRefresh(true);
         setSlider(await scrapeSlider());
         const homedata= await allscraper();
-        setrecent(homedata?.['recently-updated']);
-        setpopular(homedata?.['most-popular']);
-        setairing(homedata?.['top-airing']);
-        setMovies(homedata?.['movie']);
+        setrecent(homedata?.['Recently-Updated']);
+        setpopular(homedata?.['Most-Popular']);
+        setairing(homedata?.['Top-Airing']);
+        setMovies(homedata?.['Movie']);
       }else{
         const { data } = route.params;
         setSlider(data?.slider);
-        setrecent(data?.data?.['recently-updated']);
-        setpopular(data?.data?.['most-popular']);
-        setairing(data?.data?.['top-airing']);
-        setMovies(data?.data?.['movie']);
+        setrecent(data?.data?.['Recently-Updated']);
+        setpopular(data?.data?.['Most-Popular']);
+        setairing(data?.data?.['Top-Airing']);
+        setMovies(data?.data?.['Movie']);
       }
       await loadLastPlayed();
     }catch(e){ console.log('Error in loadData '+refresh)}

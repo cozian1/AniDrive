@@ -18,23 +18,35 @@ import SplashScreen from "./SplashScreen";
 import TestView from "./Renderer/TestView";
 import Fevbtn from "./miniview/Fevbtn";
 import ProfileScreen from "./ProfileScreen";
+import Home3 from "./Home3";
+import LoadExtra from "./Screens/LoadExtra";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen
+          name="Root"
+          component={Home3}
+          options={{ headerShown: false, animation: "fade_from_bottom" }}
+        />
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
           options={{ headerShown: false, animation: "fade_from_bottom" }}
         />
         <Stack.Screen
+          name="LoadExtra"
+          component={LoadExtra}
+          options={{ headerShown: false, animation: "slide_from_bottom",presentation:'containedTransparentModal' }}
+        />
+        <Stack.Screen
           name="Home"
           component={Home}
           options={{
             headerTransparent: true,
-            headerTitle: () => <Header name="Home" />,
+            headerTitle: () => <Header name="Home"/>,
             headerStyle: {
               height: 120,
             },

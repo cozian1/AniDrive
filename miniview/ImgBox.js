@@ -33,7 +33,6 @@ export default function ImgBox(props) {
     <Pressable style={[styles.box,props.style]} onPress={()=>{Navigation.push('Details', {id: props.id,data:props});}}>
       <ImageBackground
         style={styles.img}
-        imageStyle={{ borderRadius: 15 }}
         source={{ uri: props.src }}
       >
         <View style={{ flexDirection: "row" }}>
@@ -66,6 +65,7 @@ const styles = StyleSheet.create({
     height: 190,
     backgroundColor: "#000",
     borderRadius: 15,
+    overflow:'hidden',
     margin: 5,
   },
   img: {

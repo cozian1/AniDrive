@@ -127,17 +127,24 @@ export default function ProfileScreen({ navigation, route }) {
 		ToastAndroid.show('Saved', ToastAndroid.SHORT);
 	}
 	async function onFetchUpdateAsync() {
-		try {
-		const update = await Updates.checkForUpdateAsync();
+		ToastAndroid.show('Looking for Update', ToastAndroid.SHORT);
+		alert(require('./app.json').expo.version);
+		alert(Platform.constants)
+		// try {
+		// const update = await Updates.checkForUpdateAsync();
+		// alert(JSON.stringify(update));
 
-		if (update.isAvailable) {
-			await Updates.fetchUpdateAsync();
-			await Updates.reloadAsync();
-		}
-		} catch (error) {
-		// You can also add an alert() to see the error message in case of an error when fetching updates.
-		alert(`Error fetching latest Expo update: ${error}`);
-		}
+		// if (update.isAvailable,update.isAvailable) {
+		// 	ToastAndroid.show('Updating', ToastAndroid.SHORT);
+		// 	await Updates.fetchUpdateAsync();
+		// 	await Updates.reloadAsync();
+		// }else{
+		// 	ToastAndroid.show('Already Up to date', ToastAndroid.SHORT);
+		// }
+		// } catch (error) {
+		// // You can also add an alert() to see the error message in case of an error when fetching updates.
+		// alert(`Error fetching latest Expo update: ${error}`);
+		// }
 	}
 	useEffect(() => {
 		async function load(){

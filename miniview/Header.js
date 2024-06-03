@@ -15,7 +15,7 @@ const screenWidth = Dimensions.get("window").width;
 export default function Header(props) {
   const Navigation=useNavigation();
   return (
-    <View style={{ justifyContent: "center", marginStart:-15,}}>      
+    <View style={{ justifyContent: "center", marginStart:-15}}>      
       <View
         style={{
           width: screenWidth,
