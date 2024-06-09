@@ -11,7 +11,8 @@ export default function Fevbtn(props) {
     }
     useEffect(() => {
       load=async()=>{
-        await DataBase.FEVLIST.contains(props.data.id).then((res)=>setfev(res));
+        console.log(props.data.id);
+        await DataBase.FEVLIST.contains(props.data.id).then((res)=>{setfev(res);console.log('BOx',res);});
       }
       load();
     }, [])

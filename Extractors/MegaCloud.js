@@ -26,7 +26,7 @@ export class MegaCloud {
         },
       }).then((res) => res.json());
 
-      const decrypted =JSON.parse(await this.decrypt(data.sources))[0];
+      const decrypted =data.encrypted?JSON.parse(await this.decrypt(data.sources))[0]:data.sources[0];
 
       const meta =await fetch(decrypted.file).then((res)=>res.text());
       const regex = /RESOLUTION=(\d+x\d+)[\s\S]*?\n(index[^\\n]+?\.m3u8)/g;

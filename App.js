@@ -26,14 +26,14 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen
-          name="Root"
-          component={Home3}
-          options={{ headerShown: false, animation: "fade_from_bottom" }}
-        />
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
+          options={{ headerShown: false, animation: "fade_from_bottom" }}
+        /> 
+        <Stack.Screen
+          name="Root"
+          component={Home3}
           options={{ headerShown: false, animation: "fade_from_bottom" }}
         />
         <Stack.Screen
